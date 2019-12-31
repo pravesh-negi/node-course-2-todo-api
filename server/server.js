@@ -10,40 +10,49 @@ var {User}=require('./models/user');
 var app=express();
 app.use(bodyParser.json()); // this will takes the middleware. if we are writing custom middleware it will be function.if we are using third party middleware we usually just access something off of the library. 
 
-// // we will hit a post request from postman with localhost:3000/todos url which will console the log.
-// app.post('/todos',(req,res)=>{
-//    // console.log(req.body);
-//     var todo=new Todo({ 
-//         text:req.body.text
-//     });
+// we will hit a post request from postman with localhost:3000/todos url which will console the log.
+app.post('/todos',(req,res)=>{
+   // console.log(req.body);
+    var todo=new Todo({ 
+        text:req.body.text
+    });
 
-//     todo.save().then((doc)=>{
-//         res.send(doc);
-//     },(e)=>{
-//         res.status(400).send(e);
-//     }); 
-// });
+    todo.save().then((doc)=>{
+        res.send(doc);
+    },(e)=>{
+        res.status(400).send(e);
+    }); 
+});
 
-// we will hit a post request from postman with localhost:3000/users url which will console the log.
-app.post('/users',(req,res)=>{
-    debugger;
-    // console.log(req.body);
-     var user=new User({ 
-        email:req.body.email
-     });
+// // we will hit a post request from postman with localhost:3000/users url which will console the log.
+// app.post('/users',(req,res)=>{
+//     debugger;
+//     // console.log(req.body);
+//      var user=new User({ 
+//         email:req.body.email
+//      });
  
-     user.save().then((doc)=>{
-         res.send(doc);
-     },(e)=>{
-         res.status(400).send(e);
-     }); 
- });
+//      user.save().then((doc)=>{
+//          res.send(doc);
+//      },(e)=>{
+//          res.status(400).send(e);
+//      }); 
+//  });
+
+
+app.get('/todos',(req,res)=>{
+    Todo.find().then((todos)=>{
+        res.send({todos});
+    },(e)=>{
+        res.status(400).send(e);
+    })
+});
 
 app.listen(3000,()=>{
     console.log('Started on port 3000');
 });
 
- 
+ module.exports={app};
 
 
 //============================================================================================================
