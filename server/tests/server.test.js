@@ -1,13 +1,16 @@
 const expect=require('expect');
 const request=require('supertest');
+const{ObjectID}=require('mongodb');
 
 const{app}=require('./../server'); // mapping with server.js file
 const{Todo}=require('./../models/todo');
 
 
 const todos=[{
+    _id:new ObjectID(),
     text:'First test todo'
 },{
+    _id:new ObjectID(),
     text:'Second test todo'
 }];
 
@@ -76,4 +79,38 @@ describe('GET /todos',()=>{
         })
         .end(done);
     }); 
+});
+
+
+describe('GET /todos/:id',()=>{
+    // if id send from here match with the id of mongoDb.
+    it('should return todo doc',(done)=>{
+        request(app)
+        .get(`/todos/${todos[0]._id.toHexString()}`)
+        .expect(200)
+        .expect((res)=>{
+            expect(res.body.todo.text).toBe(todos[0].text);
+        })
+        .end(done);
+    });
+
+    // if id send from here does not match with the id of mongoDb.
+    it('should return 404 if todonot found',(done)=>{
+        var hexId=new ObjectID().toHexString();
+
+        request(app)
+        .get(`/todos/${hexId}`)
+        .expect(404)
+        .end(done);
+    });
+
+    // send the hit to server.js from where 123abc will send invalid and send 404 response which is same expect here.
+    it('should return 404 for non-object ids',(done)=>{
+        request(app)
+        .get('/todos/123abc')
+        .expect(404)
+        .end(done);
+    });
+
+
 });
