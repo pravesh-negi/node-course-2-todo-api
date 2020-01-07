@@ -2,7 +2,7 @@
  var express=require('express');
  var bodyParser=require('body-parser'); //this is going to let us send json to the server.the server can take that json and do 
                                         //something with it.it take the string body and turns it into a javascript object.							
-
+var {ObjectID}=require('mongodb');
 var {mongoose}=require('./db/mongoose');
 var {Todo}=require('./models/todo');
 var {User}=require('./models/user');
@@ -47,6 +47,27 @@ app.get('/todos',(req,res)=>{
         res.status(400).send(e);
     })
 });
+
+// localhost:3000/todos/5e0b464cb994b28c4ceb2c2f :- when hit in postman we will get response in postman.
+app.get('/todos/:id',(req,res)=>{
+    //res.send(req.params);
+    var id=req.params.id;
+
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send();
+    }
+
+    Todo.findById(id).then((todo)=>{
+        if(!todo){
+            return res.status(404).send();
+        }
+        res.send({todo});
+    }).catch((e)=>{
+        res.status(400).send();
+    });
+
+});
+
 
 app.listen(3000,()=>{
     console.log('Started on port 3000');
