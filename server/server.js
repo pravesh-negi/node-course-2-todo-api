@@ -8,6 +8,7 @@ var {Todo}=require('./models/todo');
 var {User}=require('./models/user');
 
 var app=express();
+const port=process.env.PORT||3000;   // it will set if app is running on Heroku other wise will take 3000 locally.
 app.use(bodyParser.json()); // this will takes the middleware. if we are writing custom middleware it will be function.if we are using third party middleware we usually just access something off of the library. 
 
 // we will hit a post request from postman with localhost:3000/todos url which will console the log.
@@ -64,13 +65,32 @@ app.get('/todos/:id',(req,res)=>{
         res.send({todo});
     }).catch((e)=>{
         res.status(400).send();
-    });
+    }); 
+});
 
+// Hit the url from postman :- localhost:3000/todos/5e1c05f2313ec9c8609176f5 for DELETE.
+app.delete('/todos/:id',(req,res)=>{
+    var id=req.params.id;
+
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send();
+    }
+
+    Todo.findByIdAndRemove(id).then((todo)=>{
+        if(!todo){
+            return res.status(404).send();
+        }
+        res.send(todo);
+    }).catch((e)=>{
+        res.status(400).send();
+    });
 });
 
 
-app.listen(3000,()=>{
-    console.log('Started on port 3000');
+//app.listen(3000,()=>{
+app.listen(port,()=>{
+    //console.log('Started on port 3000');
+    console.log(`Started up at port ${port}`);
 });
 
  module.exports={app};
