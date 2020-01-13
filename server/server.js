@@ -1,8 +1,9 @@
- 
- var express=require('express');
- var bodyParser=require('body-parser'); //this is going to let us send json to the server.the server can take that json and do 
+ const _=require('lodash');
+ const express=require('express');
+ const bodyParser=require('body-parser'); //this is going to let us send json to the server.the server can take that json and do 
                                         //something with it.it take the string body and turns it into a javascript object.							
-var {ObjectID}=require('mongodb');
+const {ObjectID}=require('mongodb');
+
 var {mongoose}=require('./db/mongoose');
 var {Todo}=require('./models/todo');
 var {User}=require('./models/user');
@@ -85,6 +86,35 @@ app.delete('/todos/:id',(req,res)=>{
         res.status(400).send();
     });
 });
+
+// patch :- to update the todo items.
+app.patch('/todos/:id',(req,res)=>{
+    var id=req.params.id;
+    var body=_.pick(req.body,['text','completed']);
+
+    if(!ObjectID.isValid(id)){
+        return res.status(404).send();
+    }
+
+    if(_.isBoolean(body.completed)&& body.completed){
+        body.completedAt=new Date().getTime();
+    } else{
+        body.completed=false;
+        body.completedAt=null;
+    }
+
+    Todo.findByIdAndUpdate(id,{$set:body},{new:true}).then((todo)=>{
+        if(!todo){
+            return res.status(404).send();
+        }
+        res.send({todo});
+    }).catch((e)=>{
+        res.status(400).send();
+    })
+});
+// <<<<<<<<<<<<<<< Output :- 
+// PS G:\KNW\KNW\KNW LANGUAGE\NODEJS\PRACTICE\7.1_MongoDB_API\node-todo-api> npm start
+// then hit from the postman
 
 
 //app.listen(3000,()=>{
