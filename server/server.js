@@ -70,7 +70,7 @@ app.get('/todos/:id',(req,res)=>{
 
 // Hit the url from postman :- localhost:3000/todos/5e1c05f2313ec9c8609176f5 for DELETE.
 app.delete('/todos/:id',(req,res)=>{
-    var id=req.params.id;
+    var id=req.params.id;   // 5e1c05f2313ec9c8609176f5
 
     if(!ObjectID.isValid(id)){
         return res.status(404).send();
