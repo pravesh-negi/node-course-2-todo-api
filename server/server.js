@@ -87,7 +87,7 @@ app.delete('/todos/:id',(req,res)=>{
     });
 });
 
-// patch :- to update the todo items.
+// patch :- to update the todo items.test can be done when hitted from postman.
 app.patch('/todos/:id',(req,res)=>{
     var id=req.params.id;
     var body=_.pick(req.body,['text','completed']);
