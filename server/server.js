@@ -1,4 +1,6 @@
- const _=require('lodash');
+require('./config/config');
+
+const _=require('lodash');
  const express=require('express');
  const bodyParser=require('body-parser'); //this is going to let us send json to the server.the server can take that json and do 
                                         //something with it.it take the string body and turns it into a javascript object.							
@@ -9,7 +11,9 @@ var {Todo}=require('./models/todo');
 var {User}=require('./models/user');
 
 var app=express();
-const port=process.env.PORT||3000;   // it will set if app is running on Heroku other wise will take 3000 locally.
+//const port=process.env.PORT||3000;   // it will set if app is running on Heroku other wise will take 3000 locally.
+const port=process.env.PORT;
+
 app.use(bodyParser.json()); // this will takes the middleware. if we are writing custom middleware it will be function.if we are using third party middleware we usually just access something off of the library. 
 
 // we will hit a post request from postman with localhost:3000/todos url which will console the log.
